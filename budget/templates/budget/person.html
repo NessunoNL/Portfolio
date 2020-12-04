@@ -1,0 +1,81 @@
+{% extends "budget/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <center><h1> Budget voor {{ title }} </h1></center>
+    <br />
+    <div class="row">
+        <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 pt-4 pb-4">
+            <img src="data:image/png;base64,{{ graph_1 }}" alt="" height="360" width="490" style="border-radius: 30px; border: 1px solid #09609e; padding: 5px;">
+        </div>
+        <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 pt-4 pb-4">
+            <img src="data:image/png;base64,{{ graph_2 }}" style="float: right;border-radius: 30px; border: 1px solid #09609e; padding: 5px;" alt="" height="360" width="490">
+        </div>
+    </div>
+    <div class="jumbotron" style=" background-image: url('{% static 'budget/img/jumbotron_income.jpg' %}'); background-size: cover;">
+        <center><h1 class="display-4">Inkomsten</h1></center>
+    </div>
+    <a class='btn btn-primary btn-sm' href="#">Inkomsten toevoegen</a>
+    <div class="row">
+        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 pt-4">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th> Naam </th>
+                        <th> Bedrag </th>
+                    </tr>
+                </thead>
+                {% for item in income %}
+                <tr>
+                    <td> {{ item.name}} </td>
+                    <td> € {{ item.amount }} </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 pt-4"></div>
+        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 pt-4"></div>
+    </div>
+    <div class="row">
+        <div class="container">
+            <hr />
+            <h4 style="text-align:right">totaal inkomsten: € {{ total_income }}</h4>
+            <hr />
+        </div>
+    </div>
+    <div class="jumbotron" style=" background-image: url('{% static 'budget/img/jumbotron_expenses.png' %}'); background-size: cover;">
+        <center><h1 class="display-4">Uitgaven</h1></center>
+    </div>
+        <a class='btn btn-primary btn-sm' href="#">Uitgave toevoegen</a>
+    <div class="row">
+        {% for category, expense in expenses.items %}
+        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 pt-4">
+            <p class="lead">{{ category }}</p>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">Naam</th>
+                        <th scope="col">Bedrag</th>
+                    </tr>
+                </thead>
+                {% for item in expense %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>€ {{ item.amount }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+        <div class="row">
+            <div class="container">
+                <hr />
+                <h4 style="text-align:right">totaal uitgaven: € {{ total_expenses }}</h4>
+                <hr />
+                <h4 style="text-align:right">totaal over: € {{ total_difference }}</h4>
+                <hr />
+            </div>
+        </div>
+    </div>
+{% endblock content %}

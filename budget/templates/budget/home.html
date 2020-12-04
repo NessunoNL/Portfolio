@@ -1,0 +1,66 @@
+{% extends "budget/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 pt-4">
+      <div class="jumbotron" style=" background-image: url('{% static 'budget/img/jumbotron_jacco.jpg' %}'); background-size: cover;"></div>
+    </div>
+    <div class="col col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 pt-4">
+      <div class="jumbotron" style=" background-image: url('{% static 'budget/img/jumbotron_marjolein.jpg' %}'); background-size: cover;"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 pt-4">
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th> Soort </th>
+            <th> Bedrag </th>
+          </tr>
+        </thead>
+        <tr>
+          <td>Inkomsten</td>
+          <td align="right">€ {{ income_jacco }}</td>
+        </tr>
+        <tr>
+          <td>Uitgaven</td>
+          <td align="right">- € {{ expenses_jacco }}</td>
+        </tr>
+        <tr>
+          <th style="border-top: 2pt solid black">Balans</th>
+          <th style="border-top: 2pt solid black; text-align: right">€ {{ difference_jacco }}</th>
+        </tr>
+      </table>
+
+      <div class="alert alert-info" role="alert" style="text-align: center; ">Naar gezamenlijke rekening: <b>€ {{ monthly_jacco }} </b></div>
+    </div>
+
+    <div class="col col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 pt-4">
+      <table class="table">
+        <thead>
+          <tr>
+            <th> Soort </th>
+            <th> Bedrag </th>
+          </tr>
+        </thead>
+        <tr>
+          <td>Inkomsten</td>
+          <td align="right">€ {{ income_marjolein }}</td>
+        </tr>
+        <tr>
+          <td>Uitgaven</td>
+          <td align="right">- € {{ expenses_marjolein }}</td>
+        </tr>
+        <tr>
+          <th style="border-top: 2pt solid black">Balans</th>
+          <th style="border-top: 2pt solid black; text-align: right">€ {{ difference_marjolein }}</th>
+        </tr>
+      </table>
+      <div class="alert alert-info" role="alert" style="text-align: center">Naar gezamenlijke rekening: <b> € {{ monthly_marjolein }} </b></div>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}

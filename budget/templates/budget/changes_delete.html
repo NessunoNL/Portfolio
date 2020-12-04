@@ -6,10 +6,10 @@
         {% csrf_token %}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Delete change</legend>
-            <div class="alert alert-danger" role="alert">
-                Zeker weten dat je de volgende verandering wilt verwijderen?
-            </div>
-            <h4>{{ pending_changes }}</h4>
+                <h4>Zeker weten dat je de volgende verandering wilt verwijderen? </h4>
+                <blockquote class="blockquote">
+                    <p>{{ pending_changes }}</p>
+                </blockquote> 
         </fieldset>
         <div class="form-group">
             <button class="btn btn-danger" type="submit">Verwijderen</button

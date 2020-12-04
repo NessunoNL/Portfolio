@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import CreateView, DeleteView
-from bootstrap_datepicker_plus import DateTimePickerInput
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from .models import Changes
 from .scripts import Person, get_pending_changes, process_changes
 
@@ -66,18 +67,24 @@ def changes(request):
     context = {
         'title': 'Veranderingen',
         'pending_changes': get_pending_changes(),
-        }
+    }
+
     return render(request, 'budget/changes.html', context)
 
-class ChangeCreateView(CreateView):
+class ChangeCreateView(SuccessMessageMixin, CreateView):
     model = Changes
     template_name = 'budget/changes_create.html'
     fields = ['name', 'new_amount', 'date']
     context_object_name = 'pending_changes'
     success_url = '../'
+    success_message = "Toevoegen succesvol!"
 
 class ChangeDeleteView(DeleteView):
     model = Changes
     template_name = 'budget/changes_delete.html'
     context_object_name = 'pending_changes'
     success_url = '../../'
+    success_message = "Verwijderen succesvol!"
+    def delete(self, request, *args, **kwargs):
+        messages.warning(self.request, self.success_message)
+        return super(ChangeDeleteView, self).delete(request, *args, **kwargs)

@@ -3,8 +3,18 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-{% if not pending_changes %}
+
 <div class="container">
+{% if messages %}
+{% for message in messages %}
+
+<div class="alert alert-{{ message.tags }}" role="alert">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% if not pending_changes %}
+
     <h2>Er zijn geen toekomstige veranderingen</h2>
     <hr />
     <a href="{% url 'budget-createchange' %}" class="btn btn-primary">Verandering toevoegen</a>

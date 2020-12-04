@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .scripts import Person
+from django.views.generic import CreateView, DeleteView
+from bootstrap_datepicker_plus import DateTimePickerInput
+from .models import Changes
+from .scripts import Person, get_pending_changes, process_changes
 
 jacco = Person('Jacco')
 marjolein = Person('Marjolein')
 
 # Create your views here.
 def home(request):
-
+    process_changes()
     context = {
         'title': 'home',
         'expenses_jacco': jacco.get_total_expenses(),
@@ -23,7 +26,7 @@ def home(request):
     return render(request, 'budget/home.html', context)
 
 def Jacco(request):
-
+    process_changes()
     colors = ['#09609e', '#0076b3', '#008dc5', '#00a4d3', '#00bbdf', '#00d2e6',
     '#00e9eb', '#47ffee']
 
@@ -42,7 +45,7 @@ def Jacco(request):
     return render(request, 'budget/person.html', context)
 
 def Marjolein(request):
-
+    process_changes()
     colors = ['#9e3f80','#a55194','#ab63a8','#b075bb','#b586cd','#ba97de',
     '#bfa9ef','#c4baff']
 
@@ -60,4 +63,21 @@ def Marjolein(request):
     return render(request, 'budget/person.html', context)
 
 def changes(request):
-    return render(request, 'budget/changes.html', {'title': 'changes'})
+    context = {
+        'title': 'Veranderingen',
+        'pending_changes': get_pending_changes(),
+        }
+    return render(request, 'budget/changes.html', context)
+
+class ChangeCreateView(CreateView):
+    model = Changes
+    template_name = 'budget/changes.html'
+    fields = ['name', 'new_amount', 'date']
+    context_object_name = 'pending_changes'
+    success_url = '../../'
+
+class ChangeDeleteView(DeleteView):
+    model = Changes
+    template_name = 'budget/delete.html'
+    context_object_name = 'pending_changes'
+    success_url = '../../'

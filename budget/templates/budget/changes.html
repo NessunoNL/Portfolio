@@ -3,28 +3,25 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
+{% if not pending_changes %}
 <div class="container">
-    <form method="POST">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Voer verandering in:</legend>
-            {{ form|crispy }}
-        </fieldset>
-        <div class="form-group">
-            <button class="btn btn-primary" type="submit">Toevoegen</button
-        </div>
-    </form>
+    <h2>Er zijn geen toekomstige veranderingen</h2>
+    <hr />
+    <a href="{% url 'budget-createchange' %}" class="btn btn-primary">Verandering toevoegen</a>
+{% else %}
+    <h2>Toekomstige veranderingen</h2>
+    <hr />
+    <a href="{% url 'budget-createchange' %}" class="btn btn-primary">Verandering toevoegen</a>
+    <div class="row pt-4 pb-4">
+        <table class='table'>
+        {% for change in pending_changes %}
+            <tr>
+                <td>{{ change }}</td>
+                <td><a class='btn btn-danger' href='{{ change.id }}/delete/'>Verwijderen</a></td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+        </table>
+    </div>
 </div>
-{% if pending_changes %}
-<h2>Toekomstige veranderingen</h2>
-<table class='table'>
-{% for change in pending_changes %}
-    <tr>
-        <td>{{ change }}</td>
-        <td><a class='btn btn-danger' href='{{ change.id }}/delete/'>Verwijderen</a></td>
-    </tr>
-{% endfor %}
-{% endif %}
-</table>
-
 {% endblock content %}

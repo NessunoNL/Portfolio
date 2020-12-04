@@ -71,13 +71,13 @@ def changes(request):
 
 class ChangeCreateView(CreateView):
     model = Changes
-    template_name = 'budget/changes.html'
+    template_name = 'budget/changes_create.html'
     fields = ['name', 'new_amount', 'date']
     context_object_name = 'pending_changes'
-    success_url = '../../'
+    success_url = '../'
 
 class ChangeDeleteView(DeleteView):
     model = Changes
-    template_name = 'budget/delete.html'
+    template_name = 'budget/changes_delete.html'
     context_object_name = 'pending_changes'
     success_url = '../../'

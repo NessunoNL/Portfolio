@@ -1,8 +1,14 @@
 {% extends "budget/base.html" %}
 {% load static %}
 {% block content %}
-<div class="container">
-    <center><h1> Budget voor {{ title }} </h1></center>
+<div class="container pb-4 pt-4">
+    <center><h1> Budget voor {{ title }}
+        {% if not edit %}
+        <a href='./?edit=True'><i class="fa fa-pencil" style="font-size: 20px; color: orange" aria-hidden="true"></i></a>
+        {% else %}
+        <a href='./'><i class="fa fa-ban" style="font-size: 20px; color: red" aria-hidden="true"></i></a>
+        {% endif %} </center>
+
     <br />
     <div class="row">
         <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 pt-4 pb-4">
@@ -12,41 +18,51 @@
             <img src="data:image/png;base64,{{ graph_2 }}" style="float: right;border-radius: 30px; border: 1px solid #09609e; padding: 5px;" alt="" height="360" width="490">
         </div>
     </div>
-    <div class="jumbotron" style=" background-image: url('{% static 'budget/img/jumbotron_income.jpg' %}'); background-size: cover;">
-        <center><h1 class="display-4">Inkomsten</h1></center>
-    </div>
-    <a class='btn btn-primary btn-sm' href="#">Inkomsten toevoegen</a>
     <div class="row">
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 pt-4">
+        <div class="container">
+            <hr />
+            <h4 style="text-align:center">totaal over: <b>€ {{ total_difference }}</b></h4>
+            <hr />
+        </div>
+    </div>
+    <div class="jumbotron" style=" background-image: url('{% static 'budget/img/jumbotron_income.jpg' %}'); background-size: cover;">
+        <center><h1 class="display-4">Inkomen</h1></center>
+    </div>
+    {% if edit %}
+    <a class='btn btn-primary btn-sm' href="../income/create">Inkomen toevoegen</a>
+    {% endif %}
+    <div class="row pb-4">
+        <div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pt-4">
             <table class="table table-sm">
                 <thead>
                     <tr>
                         <th> Naam </th>
                         <th> Bedrag </th>
+                        {% if edit %}
+                        <th> </th>
+                        {% endif %}
                     </tr>
                 </thead>
                 {% for item in income %}
                 <tr>
                     <td> {{ item.name}} </td>
                     <td> € {{ item.amount }} </td>
+                    {% if edit %}
+                    <td style="text-align: right"> <a href='../income/{{ item.id }}/delete'><i class="fa fa-trash" style="align-self: right; color: red" aria-hidden="true"></i></a></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </table>
         </div>
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 pt-4"></div>
-        <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 pt-4"></div>
+
     </div>
-    <div class="row">
-        <div class="container">
-            <hr />
-            <h4 style="text-align:right">totaal inkomsten: € {{ total_income }}</h4>
-            <hr />
-        </div>
-    </div>
+    <hr>
     <div class="jumbotron" style=" background-image: url('{% static 'budget/img/jumbotron_expenses.png' %}'); background-size: cover;">
         <center><h1 class="display-4">Uitgaven</h1></center>
     </div>
-        <a class='btn btn-primary btn-sm' href="#">Uitgave toevoegen</a>
+        {% if edit %}
+        <a class='btn btn-primary btn-sm' href="../expense/create">Uitgave toevoegen</a>
+        {% endif %}
     <div class="row">
         {% for category, expense in expenses.items %}
         <div class="col col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 pt-4">
@@ -56,26 +72,23 @@
                     <tr>
                         <th scope="col">Naam</th>
                         <th scope="col">Bedrag</th>
+                        {% if edit %}
+                        <th> </th>
+                        {% endif %}
                     </tr>
                 </thead>
                 {% for item in expense %}
                 <tr>
                     <td>{{ item.name }}</td>
                     <td>€ {{ item.amount }}</td>
+                    {% if edit %}
+                    <td> <a href='../expense/{{ item.id }}/delete'><i class="fa fa-trash" style="align-self: right; color: red" aria-hidden="true"></i></a></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </table>
         </div>
         {% endfor %}
     </div>
-        <div class="row">
-            <div class="container">
-                <hr />
-                <h4 style="text-align:right">totaal uitgaven: € {{ total_expenses }}</h4>
-                <hr />
-                <h4 style="text-align:right">totaal over: € {{ total_difference }}</h4>
-                <hr />
-            </div>
-        </div>
-    </div>
+</div>
 {% endblock content %}

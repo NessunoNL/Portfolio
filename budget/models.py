@@ -28,18 +28,16 @@ class Incomes(models.Model):
     personchoices = [
     ('Jacco', 'Jacco'),
     ('Marjolein', 'Marjolein'),
-    ('Joint', 'Gezamenlijk'),
     ]
 
-    categorychoices = [
-    ('Maandelijks', 'Maandelijks'),
-    ('Wekelijks', 'Wekelijks'),
-    ('Eenmalig', 'Eenmalig'),
-    ]
-    name = models.CharField(max_length=100, default='undefined')
-    category = models.CharField(max_length=100, choices=categorychoices)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    person = models.CharField(max_length=100, choices=personchoices)
+    # categorychoices = [
+    # ('Maandelijks', 'Maandelijks'),
+    # ('Wekelijks', 'Wekelijks'),
+    # ]
+    name = models.CharField(max_length=100, verbose_name='Naam')
+    category = models.CharField(max_length=100, verbose_name='Categorie', default='Maandelijks')
+    amount = models.DecimalField(max_digits=10, verbose_name='Bedrag in €', decimal_places=2)
+    person = models.CharField(max_length=100, verbose_name='Voor ', choices=personchoices)
 
     def __str__(self):
         return self.name + ": " + self.person + " - " + self.category
@@ -66,18 +64,18 @@ class Expenses(models.Model):
     ('Gezondheid', 'Gezondheid'),
     ]
 
-    category = models.CharField(max_length=100, choices=categorychoices)
-    name = models.CharField(max_length=100)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    person = models.CharField(max_length=100, choices=personchoices)
-    jointbankaccount = models.BooleanField()
+    category = models.CharField(max_length=100, verbose_name='Categorie', choices=categorychoices)
+    name = models.CharField(max_length=100, verbose_name='Naam')
+    amount = models.DecimalField(max_digits=10, verbose_name='Bedrag in €_', decimal_places=2)
+    person = models.CharField(max_length=100, verbose_name='Voor ', choices=personchoices)
+    jointbankaccount = models.BooleanField(verbose_name='Betalen naar gezamenlijke? ')
 
     def __str__(self):
         if self.person == 'Joint':
             _person = 'allebei'
         else:
             _person = self.person
-        return f'{self.name} - {_person}'
+        return f'{self.name} - {_person}: € {self.amount}'
 
     class Meta:
         verbose_name_plural = "expenses"
@@ -94,10 +92,10 @@ class Changes(models.Model):
     ('expense', 'Uitgave'),
     ]
 
-    name = models.ForeignKey(Expenses, on_delete=models.CASCADE)
-    new_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateField()
-    completed = models.BooleanField(default=False)
+    name = models.ForeignKey(Expenses, verbose_name='Uitgave', on_delete=models.CASCADE)
+    new_amount = models.DecimalField(max_digits=10, verbose_name='Nieuw bedrag in €', decimal_places=2)
+    date = models.DateField(verbose_name='Datum')
+    completed = models.BooleanField(default=False, verbose_name='Reeds voltooid?')
 
     def __str__(self):
         if self.name.person == 'Joint':

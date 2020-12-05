@@ -1,0 +1,37 @@
+{% extends "budget/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<div class="container">
+{% if messages %}
+{% for message in messages %}
+
+<div class="alert alert-{{ message.tags }}" role="alert">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% if not pending_changes %}
+
+    <h2>Er zijn geen toekomstige veranderingen</h2>
+    <hr />
+    <a href="{% url 'budget-createchange' %}" class="btn btn-primary">Verandering toevoegen</a>
+{% else %}
+    <h2>Toekomstige veranderingen</h2>
+    <hr />
+    <a href="{% url 'budget-createchange' %}" class="btn btn-primary">Verandering toevoegen</a>
+    <div class="row pt-4 pb-4">
+        <table class='table'>
+        {% for change in pending_changes %}
+            <tr>
+                <td>{{ change }}</td>
+                <td><a class='btn btn-danger' href='{{ change.id }}/delete/'>Verwijderen</a></td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+        </table>
+    </div>
+</div>
+{% endblock content %}

@@ -2,29 +2,29 @@ from django.db import models
 
 # Create your models here.
 
-class income(models.Model):
-    personchoices = [
-    ('Jacco', 'Jacco'),
-    ('Marjolein', 'Marjolein'),
-    ('Joint', 'Gezamenlijk'),
-    ]
+# class Income(models.Model):
+#     personchoices = [
+#     ('Jacco', 'Jacco'),
+#     ('Marjolein', 'Marjolein'),
+#     ('Joint', 'Gezamenlijk'),
+#     ]
+#
+#     categorychoices = [
+#     ('Maandelijks salaris', 'Maandelijks salaris'),
+#     ('Wekelijks salaris', 'Wekelijks salaris'),
+#     ('Eenmalig', 'Eenmalig'),
+#     ]
+#     category = models.CharField(max_length=100, choices=categorychoices)
+#     amount = models.DecimalField(max_digits=10, decimal_places=2)
+#     person = models.CharField(max_length=100, choices=personchoices)
+#
+#     def __str__(self):
+#         return self.category
+#
+#     class Meta:
+#         verbose_name_plural = "income"
 
-    categorychoices = [
-    ('Maandelijks salaris', 'Maandelijks salaris'),
-    ('Wekelijks salaris', 'Wekelijks salaris'),
-    ('Eenmalig', 'Eenmalig'),
-    ]
-    category = models.CharField(max_length=100, choices=categorychoices)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    person = models.CharField(max_length=100, choices=personchoices)
-
-    def __str__(self):
-        return self.category
-
-    class Meta:
-        verbose_name_plural = "income"
-
-class incomes(models.Model):
+class Incomes(models.Model):
     personchoices = [
     ('Jacco', 'Jacco'),
     ('Marjolein', 'Marjolein'),
@@ -47,7 +47,7 @@ class incomes(models.Model):
     class Meta:
         verbose_name_plural = "income"
 
-class expenses(models.Model):
+class Expenses(models.Model):
     personchoices = [
     ('Jacco', 'Jacco'),
     ('Marjolein', 'Marjolein'),
@@ -73,12 +73,16 @@ class expenses(models.Model):
     jointbankaccount = models.BooleanField()
 
     def __str__(self):
-        return self.name + " - " + self.person + " - " + str(self.jointbankaccount)
+        if self.person == 'Joint':
+            _person = 'allebei'
+        else:
+            _person = self.person
+        return f'{self.name} - {_person}'
 
     class Meta:
         verbose_name_plural = "expenses"
 
-class changes(models.Model):
+class Changes(models.Model):
     personchoices = [
     ('Jacco', 'Jacco'),
     ('Marjolein', 'Marjolein'),
@@ -90,14 +94,17 @@ class changes(models.Model):
     ('expense', 'Uitgave'),
     ]
 
-    category = models.CharField(max_length=100, choices=categorychoices)
-    name = name = models.CharField(max_length=100)
+    name = models.ForeignKey(Expenses, on_delete=models.CASCADE)
     new_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    month = models.DateField()
-    person = models.CharField(max_length=20, choices=personchoices)
+    date = models.DateField()
+    completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name + ' --> € ' + str(self.new_amount)
+        if self.name.person == 'Joint':
+            _person = 'allebei'
+        else:
+            _person = self.name.person
+        return f' {self.date.day}-{self.date.month}-{self.date.year}: {self.name.name} naar € {self.new_amount} voor {_person}'
 
     class Meta:
         verbose_name_plural = "changes"

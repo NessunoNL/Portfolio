@@ -1,6 +1,6 @@
-from .models import incomes, expenses
+from .models import Incomes, Expenses, Changes
 from matplotlib import pyplot as plt
-from django.db.models import Sum
+from datetime import date
 import numpy as np
 import io
 import urllib, base64
@@ -10,12 +10,12 @@ class Person:
         self.name = name
 
     def get_income(self):
-        income = incomes.objects.filter(person=self.name)
+        income = Incomes.objects.filter(person=self.name)
         return income
 
     def get_total_income(self):
         total_income = 0
-        income = incomes.objects.filter(person=self.name)
+        income = Incomes.objects.filter(person=self.name)
         for _obj in income:
             total_income += _obj.amount
         return total_income
@@ -23,19 +23,21 @@ class Person:
     def get_expenses(self):
         catdict = {}
         totallst = []
-        for _obj in expenses.objects.filter(person__in=[self.name, 'Joint']):
+        for _obj in Expenses.objects.filter(person__in=[self.name, 'Joint']):
             _cat = _obj.category
-            catdict[_cat] = expenses.objects.filter(person__in=[self.name, 'Joint'], category=_cat)
+            catdict[_cat] = Expenses.objects.filter(person__in=[self.name, 'Joint'], category=_cat)
+        for value in catdict.values():
+            for _obj in value:
+                if _obj.person == 'Joint':
+                    _obj.amount = _obj.amount / 2
         return catdict
 
     def get_total_expenses(self):
         total_expenses = 0
         catdict = self.get_expenses()
         for value in catdict.values():
-            for obj in value:
-                if obj.person == 'Joint':
-                    obj.amount = obj.amount / 2
-                total_expenses += obj.amount
+            for _obj in value:
+                total_expenses += _obj.amount
         return total_expenses
 
     def get_difference(self):
@@ -44,7 +46,7 @@ class Person:
 
     def get_monthly(self):
         monthly = 0
-        for _obj in expenses.objects.filter(person__in=[self.name, 'Joint'], jointbankaccount=True):
+        for _obj in Expenses.objects.filter(person__in=[self.name, 'Joint'], jointbankaccount=True):
             if _obj.person == "Joint":
                 monthly += (_obj.amount / 2)
             else:
@@ -78,10 +80,7 @@ class Person:
         for key, value in self.get_expenses().items():
             cat_sum = 0
             for _obj in value:
-                if _obj.person == 'Joint':
-                    cat_sum += (_obj.amount / 2)
-                else:
-                    cat_sum += _obj.amount
+                cat_sum += _obj.amount
             y2_axis.append(cat_sum)
             fstr = f'{key} \n € {cat_sum}'
             x2_axis.append(fstr)
@@ -104,3 +103,24 @@ class Person:
 
         # Return 2 graphs as list
         return [graph_budget, graph_cat]
+
+def get_pending_changes():
+    # Check if change planned for current date or before
+    all_changes = Changes.objects.all()
+    pending_changes = []
+    for change_obj in all_changes:
+        if not change_obj.completed == True:
+            pending_changes.append(change_obj)
+    return pending_changes
+
+def process_changes():
+    #process eligible changes
+    all_changes = Changes.objects.all()
+    to_be_processed = []
+    for change_obj in all_changes:
+        if change_obj.date <= date.today():
+            # process change
+            change_obj.name.amount = change_obj.new_amount
+            change_obj.completed = True
+            change_obj.name.save()
+            change_obj.save()

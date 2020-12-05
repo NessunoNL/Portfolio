@@ -78,6 +78,11 @@ class ChangeCreateView(SuccessMessageMixin, CreateView):
     context_object_name = 'pending_changes'
     success_url = '../'
     success_message = "Toevoegen succesvol!"
+    def get_form(self):
+        '''add date picker in forms'''
+        form = super(ChangeCreateView, self).get_form()
+        form.fields['date'].widget.input_type = 'date'
+        return form
 
 class ChangeDeleteView(DeleteView):
     model = Changes

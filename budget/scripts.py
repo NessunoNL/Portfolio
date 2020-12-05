@@ -26,16 +26,18 @@ class Person:
         for _obj in Expenses.objects.filter(person__in=[self.name, 'Joint']):
             _cat = _obj.category
             catdict[_cat] = Expenses.objects.filter(person__in=[self.name, 'Joint'], category=_cat)
+        for value in catdict.values():
+            for _obj in value:
+                if _obj.person == 'Joint':
+                    _obj.amount = _obj.amount / 2
         return catdict
 
     def get_total_expenses(self):
         total_expenses = 0
         catdict = self.get_expenses()
         for value in catdict.values():
-            for obj in value:
-                if obj.person == 'Joint':
-                    obj.amount = obj.amount / 2
-                total_expenses += obj.amount
+            for _obj in value:
+                total_expenses += _obj.amount
         return total_expenses
 
     def get_difference(self):
@@ -78,10 +80,7 @@ class Person:
         for key, value in self.get_expenses().items():
             cat_sum = 0
             for _obj in value:
-                if _obj.person == 'Joint':
-                    cat_sum += (_obj.amount / 2)
-                else:
-                    cat_sum += _obj.amount
+                cat_sum += _obj.amount
             y2_axis.append(cat_sum)
             fstr = f'{key} \n € {cat_sum}'
             x2_axis.append(fstr)

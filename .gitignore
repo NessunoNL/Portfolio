@@ -3,8 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+prod.py
+
 # C extensions
 *.so
+
+settings/prod.py
 
 # Distribution / packaging
 .Python

@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import CreateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .models import Changes, Incomes, Expenses
 from .scripts import Person, get_pending_changes, process_changes
@@ -10,6 +12,7 @@ jacco = Person('Jacco')
 marjolein = Person('Marjolein')
 
 # Create your views here.
+@
 def home(request):
     process_changes()
     context = {

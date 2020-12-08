@@ -5,9 +5,10 @@ ChangeCreateView,
 IncomeCreateView,
 IncomeDeleteView,
 ExpenseCreateView,
-ExpenseDeleteView
+ExpenseDeleteView,
 )
 from . import views
+
 
 urlpatterns = [
     path('', views.home, name='budget-home'),

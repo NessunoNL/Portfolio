@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import CreateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from .models import Changes, Incomes, Expenses
 from .scripts import Person, get_pending_changes, process_changes
@@ -12,7 +14,7 @@ jacco = Person('Jacco')
 marjolein = Person('Marjolein')
 
 # Create your views here.
-@
+@login_required(redirect_field_name=None)
 def home(request):
     process_changes()
     context = {
@@ -29,6 +31,7 @@ def home(request):
 
     return render(request, 'budget/home.html', context)
 
+@login_required(redirect_field_name=None)
 def Jacco(request):
     process_changes()
     colors = ['#09609e', '#0076b3', '#008dc5', '#00a4d3', '#00bbdf', '#00d2e6',
@@ -50,6 +53,7 @@ def Jacco(request):
 
     return render(request, 'budget/person.html', context)
 
+@login_required(redirect_field_name=None)
 def Marjolein(request):
     process_changes()
     colors = ['#9e3f80','#a55194','#ab63a8','#b075bb','#b586cd','#ba97de',
@@ -72,6 +76,7 @@ def Marjolein(request):
 
     return render(request, 'budget/person.html', context)
 
+@login_required(redirect_field_name=None)
 def changes(request):
     context = {
         'title': 'Veranderingen',
@@ -80,7 +85,7 @@ def changes(request):
 
     return render(request, 'budget/changes.html', context)
 
-class ChangeCreateView(SuccessMessageMixin, CreateView):
+class ChangeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Changes
     template_name = 'budget/changes_create.html'
     fields = ['name', 'new_amount', 'date']
@@ -93,7 +98,7 @@ class ChangeCreateView(SuccessMessageMixin, CreateView):
         form.fields['date'].widget.input_type = 'date'
         return form
 
-class ChangeDeleteView(DeleteView):
+class ChangeDeleteView(LoginRequiredMixin, DeleteView):
     model = Changes
     template_name = 'budget/changes_delete.html'
     context_object_name = 'pending_changes'
@@ -103,7 +108,7 @@ class ChangeDeleteView(DeleteView):
         messages.warning(self.request, self.success_message)
         return super(ChangeDeleteView, self).delete(request, *args, **kwargs)
 
-class IncomeCreateView(SuccessMessageMixin, CreateView):
+class IncomeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Incomes
     template_name = 'budget/create.html'
     fields = ['name', 'amount', 'person']
@@ -118,7 +123,7 @@ class IncomeCreateView(SuccessMessageMixin, CreateView):
         context['name'] = 'inkomen'
         return context
 
-class ExpenseCreateView(SuccessMessageMixin, CreateView):
+class ExpenseCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Expenses
     template_name = 'budget/create.html'
     fields = ['name', 'category', 'amount', 'person', 'jointbankaccount']
@@ -133,7 +138,7 @@ class ExpenseCreateView(SuccessMessageMixin, CreateView):
         context['name'] = 'uitgave'
         return context
 
-class ExpenseDeleteView(DeleteView):
+class ExpenseDeleteView(LoginRequiredMixin, DeleteView):
     model = Expenses
     template_name = 'budget/delete.html'
     context_object_name = 'to_be_deleted'
@@ -151,7 +156,7 @@ class ExpenseDeleteView(DeleteView):
         context['name'] = 'uitgave'
         return context
 
-class IncomeDeleteView(DeleteView):
+class IncomeDeleteView(LoginRequiredMixin, DeleteView):
     model = Incomes
     template_name = 'budget/delete.html'
     context_object_name = 'to_be_deleted'
@@ -168,3 +173,11 @@ class IncomeDeleteView(DeleteView):
         # Add in a QuerySet of all the books
         context['name'] = 'inkomsten'
         return context
+
+# class RegistrationLoginView(LoginView):
+#     template_name = 'registration/login.html'
+#     redirect_field_name = None
+#
+# class RegistrationLogoutView(LogoutView):
+#     template_name = 'registration/logout.html'
+#     redirect_field_name = None

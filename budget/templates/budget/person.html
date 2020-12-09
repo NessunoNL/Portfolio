@@ -12,10 +12,10 @@
     <br />
     <div class="row">
         <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 pt-4 pb-4">
-            <img src="data:image/png;base64,{{ graph_1 }}" alt="" height="360" width="490" style="border-radius: 30px; border: 1px solid #09609e; padding: 5px;">
+            <img src="data:image/png;base64,{{ graph_1 }}" alt="" height="360" width="490" style="float: center; border-radius: 30px; border: 1px solid #09609e; padding: 5px;">
         </div>
         <div class="col col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 pt-4 pb-4">
-            <img src="data:image/png;base64,{{ graph_2 }}" style="float: right;border-radius: 30px; border: 1px solid #09609e; padding: 5px;" alt="" height="360" width="490">
+            <img src="data:image/png;base64,{{ graph_2 }}" style="float: center; border-radius: 30px; border: 1px solid #09609e; padding: 5px;" alt="" height="360" width="490">
         </div>
     </div>
     <div class="row">
@@ -37,7 +37,7 @@
                 <thead>
                     <tr>
                         <th> Naam </th>
-                        <th> Bedrag </th>
+                        <th style="text-align: right;"> Bedrag </th>
                         {% if edit %}
                         <th> </th>
                         {% endif %}
@@ -46,7 +46,7 @@
                 {% for item in income %}
                 <tr>
                     <td> {{ item.name}} </td>
-                    <td> € {{ item.amount }} </td>
+                    <td style="text-align: right;"> € {{ item.amount }} </td>
                     {% if edit %}
                     <td style="text-align: right"> <a href='../income/{{ item.id }}/delete'><i class="fa fa-trash" style="align-self: right; color: red" aria-hidden="true"></i></a></td>
                     {% endif %}
@@ -71,7 +71,7 @@
                 <thead>
                     <tr>
                         <th scope="col">Naam</th>
-                        <th scope="col">Bedrag</th>
+                        <th scope="col" style="text-align: right;">Bedrag</th>
                         {% if edit %}
                         <th> </th>
                         {% endif %}
@@ -80,7 +80,7 @@
                 {% for item in expense %}
                 <tr>
                     <td>{{ item.name }}</td>
-                    <td>€ {{ item.amount }}</td>
+                    <td style="text-align: right;">€ {{ item.amount }}</td>
                     {% if edit %}
                     <td> <a href='../expense/{{ item.id }}/delete'><i class="fa fa-trash" style="align-self: right; color: red" aria-hidden="true"></i></a></td>
                     {% endif %}

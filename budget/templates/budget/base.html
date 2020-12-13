@@ -45,6 +45,17 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'budget-changes' %}">Changes</a>
                         </li>
+                      </ul>
+                      <ul class="navbar-nav justify-content-end">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                          <a class = "nav-link" href="{% url 'logout-view' %}">Log out</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                          <a class = "nav-link disabled" href="#">Log out</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </nav>
